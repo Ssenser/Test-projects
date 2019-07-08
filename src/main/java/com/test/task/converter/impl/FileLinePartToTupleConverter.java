@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-@Qualifier("fileLinePartToTupleConverter")
 public class FileLinePartToTupleConverter implements Converter<String, Set<FileTuple>> {
 
     private static final String TUPLES_SPLITERATOR = "\\)\\(";

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-@Qualifier("fileLineToDtoConverter")
 public class FileLineToDtoConverter implements Converter<String, FileLine> {
 
     private static final String LINE_SPLITERATOR = "\t";
