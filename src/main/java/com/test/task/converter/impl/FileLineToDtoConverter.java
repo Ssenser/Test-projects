@@ -4,8 +4,6 @@ import com.test.task.converter.Converter;
 import com.test.task.dto.FileLine;
 import com.test.task.dto.FileTuple;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -19,7 +17,7 @@ public class FileLineToDtoConverter implements Converter<String, FileLine> {
     private Converter<String, Set<FileTuple>> fileLinePartToTupleConverter;
 
     @Override
-    public FileLine convert(@Nullable String source) {
+    public FileLine convert(String source) {
         final String[] lineSplitted = source.split(LINE_SPLITERATOR);
         final String uuid = lineSplitted[0];
         final String tuples = lineSplitted[1];

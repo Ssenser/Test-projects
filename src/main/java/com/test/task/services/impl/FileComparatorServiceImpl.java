@@ -51,10 +51,10 @@ public class FileComparatorServiceImpl implements FileComparatorService {
                         firstFileLine, secondFileLine);
 
                 if (firstUnique) {
-                    filesCompareResult.getFirstFileOnlyLines().add(firstFileLine.getUuid());
+                    filesCompareResult.getFirstFileOnlyUuids().add(firstFileLine.getUuid());
                     firstFileLineStr = lineReaderWrapperService.readLine(firstFileReader);
                 } else {
-                    filesCompareResult.getSecondFileOnlyLines().add(secondFileLine.getUuid());
+                    filesCompareResult.getSecondFileOnlyUuids().add(secondFileLine.getUuid());
                     secondFileLineStr = lineReaderWrapperService.readLine(secondFileReader);
                 }
             }
@@ -62,10 +62,10 @@ public class FileComparatorServiceImpl implements FileComparatorService {
 
         if (firstFileLineStr != null) {
             final List<String> uuids = writeRemainingToUnique(firstFileReader, firstFileLineStr);
-            filesCompareResult.getFirstFileOnlyLines().addAll(uuids);
+            filesCompareResult.getFirstFileOnlyUuids().addAll(uuids);
         } else if (secondFileLineStr != null) {
             final List<String> uuids = writeRemainingToUnique(secondFileReader, secondFileLineStr);
-            filesCompareResult.getSecondFileOnlyLines().addAll(uuids);
+            filesCompareResult.getSecondFileOnlyUuids().addAll(uuids);
         }
 
         lineReaderWrapperService.close(firstFileReader);
@@ -90,11 +90,11 @@ public class FileComparatorServiceImpl implements FileComparatorService {
         }
 
         if (!secondFileUniqueTuples.isEmpty()) {
-            filesCompareResult.getSecondFileMissedTuples().put(secondFileLine.getUuid(), secondFileUniqueTuples);
+            filesCompareResult.getUuidToSecondFileUniqueTuples().put(secondFileLine.getUuid(), secondFileUniqueTuples);
         }
 
         if (!firstFileUniqueTuples.isEmpty()) {
-            filesCompareResult.getFirstFileMissedTuples().put(firstFileLine.getUuid(), firstFileUniqueTuples);
+            filesCompareResult.getUuidToFirstFileUniqueTuples().put(firstFileLine.getUuid(), firstFileUniqueTuples);
         }
     }
 

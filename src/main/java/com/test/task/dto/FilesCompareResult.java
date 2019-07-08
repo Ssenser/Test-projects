@@ -8,25 +8,25 @@ import java.util.Set;
 
 public class FilesCompareResult {
 
-    private final Set<String> firstFileOnlyLines = new HashSet<>();
-    private final Set<String> secondFileOnlyLines = new HashSet<>();
-    private final Map<String, Set<FileTuple>> firstFileMissedTuples = new HashMap<>();
-    private final Map<String, Set<FileTuple>> secondFileMissedTuples = new HashMap<>();
+    private final Set<String> firstFileOnlyUuids = new HashSet<>();
+    private final Set<String> secondFileOnlyUuids = new HashSet<>();
+    private final Map<String, Set<FileTuple>> uuidToFirstFileUniqueTuples = new HashMap<>();
+    private final Map<String, Set<FileTuple>> uuidToSecondFileUniqueTuples = new HashMap<>();
 
-    public Set<String> getFirstFileOnlyLines() {
-        return firstFileOnlyLines;
+    public Set<String> getFirstFileOnlyUuids() {
+        return firstFileOnlyUuids;
     }
 
-    public Set<String> getSecondFileOnlyLines() {
-        return secondFileOnlyLines;
+    public Set<String> getSecondFileOnlyUuids() {
+        return secondFileOnlyUuids;
     }
 
-    public Map<String, Set<FileTuple>> getFirstFileMissedTuples() {
-        return firstFileMissedTuples;
+    public Map<String, Set<FileTuple>> getUuidToFirstFileUniqueTuples() {
+        return uuidToFirstFileUniqueTuples;
     }
 
-    public Map<String, Set<FileTuple>> getSecondFileMissedTuples() {
-        return secondFileMissedTuples;
+    public Map<String, Set<FileTuple>> getUuidToSecondFileUniqueTuples() {
+        return uuidToSecondFileUniqueTuples;
     }
 
     @Override
@@ -34,15 +34,15 @@ public class FilesCompareResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FilesCompareResult that = (FilesCompareResult) o;
-        return Objects.equals(firstFileOnlyLines, that.firstFileOnlyLines) &&
-                Objects.equals(secondFileOnlyLines, that.secondFileOnlyLines) &&
-                Objects.equals(firstFileMissedTuples, that.firstFileMissedTuples) &&
-                Objects.equals(secondFileMissedTuples, that.secondFileMissedTuples);
+        return Objects.equals(firstFileOnlyUuids, that.firstFileOnlyUuids) &&
+                Objects.equals(secondFileOnlyUuids, that.secondFileOnlyUuids) &&
+                Objects.equals(uuidToFirstFileUniqueTuples, that.uuidToFirstFileUniqueTuples) &&
+                Objects.equals(uuidToSecondFileUniqueTuples, that.uuidToSecondFileUniqueTuples);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstFileOnlyLines, secondFileOnlyLines, firstFileMissedTuples, secondFileMissedTuples);
+        return Objects.hash(firstFileOnlyUuids, secondFileOnlyUuids, uuidToFirstFileUniqueTuples, uuidToSecondFileUniqueTuples);
     }
 
     @Override
@@ -50,18 +50,18 @@ public class FilesCompareResult {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("UUIDs only from first file:\n");
 
-        firstFileOnlyLines.forEach(uuid -> stringBuilder.append(uuid).append(";\n"));
+        firstFileOnlyUuids.forEach(uuid -> stringBuilder.append(uuid).append(";\n"));
 
-        stringBuilder.append("UUIDs only from first file:\n");
-        secondFileOnlyLines.forEach(uuid -> stringBuilder.append(uuid).append(";\n"));
+        stringBuilder.append("UUIDs only from second file:\n");
+        secondFileOnlyUuids.forEach(uuid -> stringBuilder.append(uuid).append(";\n"));
 
         stringBuilder.append("Unique tuples from first file:\n");
-        firstFileMissedTuples.forEach((uuid, tuples) -> stringBuilder
+        uuidToFirstFileUniqueTuples.forEach((uuid, tuples) -> stringBuilder
                 .append("UUID = ").append(uuid)
                 .append(": ").append(tuples).append("\n"));
 
         stringBuilder.append("Unique tuples from second file:\n");
-        secondFileMissedTuples.forEach((uuid, tuples) -> stringBuilder.append("UUID = ").append(uuid)
+        uuidToSecondFileUniqueTuples.forEach((uuid, tuples) -> stringBuilder.append("UUID = ").append(uuid)
                 .append(": ").append(tuples).append("\n"));
 
         return stringBuilder.toString();

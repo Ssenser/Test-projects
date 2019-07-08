@@ -103,8 +103,8 @@ public class FileComparatorServiceImplTest {
         FileLine fileLine1 = new FileLine(UUID_1, Sets.newSet(tuple1, tuple2));
         FileLine fileLine2 = new FileLine(UUID_1, Sets.newSet(tuple1, tuple3));
         FilesCompareResult expectedResult = new FilesCompareResult();
-        expectedResult.getFirstFileMissedTuples().put(UUID_1, Sets.newSet(tuple2));
-        expectedResult.getSecondFileMissedTuples().put(UUID_1, Sets.newSet(tuple3));
+        expectedResult.getUuidToFirstFileUniqueTuples().put(UUID_1, Sets.newSet(tuple2));
+        expectedResult.getUuidToSecondFileUniqueTuples().put(UUID_1, Sets.newSet(tuple3));
 
         doAnswer(getFirstReadLineAnswerForOneInvocation()).when(wrapperService).readLine(firstReader);
         doAnswer(getSecondReadLineAnswerForOneInvocation()).when(wrapperService).readLine(secondReader);
@@ -134,7 +134,7 @@ public class FileComparatorServiceImplTest {
         FileLine fileLine1 = new FileLine(UUID_1, Collections.emptySet());
         FileLine fileLine2 = new FileLine(UUID_2, Collections.emptySet());
         FilesCompareResult expectedResult = new FilesCompareResult();
-        expectedResult.getSecondFileOnlyLines().add(UUID_2);
+        expectedResult.getSecondFileOnlyUuids().add(UUID_2);
 
         when(converter.convert(NOT_EMPTY_STRING_1)).thenReturn(fileLine1);
         when(converter.convert(NOT_EMPTY_STRING_2)).thenReturn(fileLine2);
