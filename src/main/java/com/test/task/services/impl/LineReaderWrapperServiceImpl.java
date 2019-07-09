@@ -12,8 +12,6 @@ import java.io.LineNumberReader;
 @Service
 public class LineReaderWrapperServiceImpl implements LineReaderWrapperService {
 
-    private static final Integer MARK_AHEAD_CHARS = 1000000;
-
     @Override
     public LineNumberReader getReader(String fileName) {
         try {
@@ -29,41 +27,6 @@ public class LineReaderWrapperServiceImpl implements LineReaderWrapperService {
             return reader.readLine();
         } catch (IOException ioe) {
             throw new IllegalArgumentException("Reading line exception: ", ioe);
-        }
-    }
-
-    @Override
-    public void mark(LineNumberReader reader) {
-        try {
-            reader.mark(MARK_AHEAD_CHARS);
-        } catch (IOException ioe) {
-            throw new IllegalArgumentException("Marking reader exception: ", ioe);
-        }
-    }
-
-    @Override
-    public void skipLines(LineNumberReader reader, int amount) {
-        try {
-            int i = 0;
-            while (i < amount) {
-                final String str = reader.readLine();
-                if (str != null) {
-                    i++;
-                } else {
-                    i = amount;
-                }
-            }
-        } catch (IOException ioe) {
-            throw new IllegalArgumentException("Skipping line exception: ", ioe);
-        }
-    }
-
-    @Override
-    public void reset(LineNumberReader reader) {
-        try {
-            reader.reset();
-        } catch (IOException ioe) {
-            throw new IllegalArgumentException("Resting reader exception: ", ioe);
         }
     }
 

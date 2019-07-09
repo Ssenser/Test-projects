@@ -8,7 +8,6 @@ import com.test.task.services.FileComparatorService;
 import com.test.task.services.LineReaderWrapperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.LineNumberReader;
 import java.util.ArrayList;
@@ -18,8 +17,6 @@ import java.util.Set;
 
 @Service
 public class FileComparatorServiceImpl implements FileComparatorService {
-
-    private static final Integer MAX_LINES_MISSED = 1000;
 
     @Autowired
     private LineReaderWrapperService lineReaderWrapperService;
@@ -46,17 +43,12 @@ public class FileComparatorServiceImpl implements FileComparatorService {
                 findAndStoreUniqueTuples(firstFileLine, secondFileLine, filesCompareResult);
                 firstFileLineStr = lineReaderWrapperService.readLine(firstFileReader);
                 secondFileLineStr = lineReaderWrapperService.readLine(secondFileReader);
+            } else if (firstFileLine.getUuid().compareTo(secondFileLine.getUuid()) > 0) {
+                filesCompareResult.getSecondFileOnlyUuids().add(secondFileLine.getUuid());
+                secondFileLineStr = lineReaderWrapperService.readLine(secondFileReader);
             } else {
-                final Boolean firstUnique = isFirstUnique(firstFileReader, secondFileReader,
-                        firstFileLine, secondFileLine);
-
-                if (firstUnique) {
-                    filesCompareResult.getFirstFileOnlyUuids().add(firstFileLine.getUuid());
-                    firstFileLineStr = lineReaderWrapperService.readLine(firstFileReader);
-                } else {
-                    filesCompareResult.getSecondFileOnlyUuids().add(secondFileLine.getUuid());
-                    secondFileLineStr = lineReaderWrapperService.readLine(secondFileReader);
-                }
+                filesCompareResult.getFirstFileOnlyUuids().add(firstFileLine.getUuid());
+                firstFileLineStr = lineReaderWrapperService.readLine(firstFileReader);
             }
         }
 
@@ -96,37 +88,6 @@ public class FileComparatorServiceImpl implements FileComparatorService {
         if (!firstFileUniqueTuples.isEmpty()) {
             filesCompareResult.getUuidToFirstFileUniqueTuples().put(firstFileLine.getUuid(), firstFileUniqueTuples);
         }
-    }
-
-    private boolean isFirstUnique(LineNumberReader firstFileReader,
-                                  LineNumberReader secondFileReader,
-                                  FileLine firstFileLine,
-                                  FileLine secondFileLine) {
-        int i = 1;
-
-        while (i < MAX_LINES_MISSED) {
-            if (isNextLinesMissed(secondFileReader, firstFileLine.getUuid(), i)) {
-                return false;
-            } else if (isNextLinesMissed(firstFileReader, secondFileLine.getUuid(), i)) {
-                return true;
-            } else {
-                i++;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isNextLinesMissed(LineNumberReader fileReader,
-                                      String uuid,
-                                      int linesMissed) {
-        lineReaderWrapperService.mark(fileReader);
-        lineReaderWrapperService.skipLines(fileReader, linesMissed - 1);
-
-        final String str = lineReaderWrapperService.readLine(fileReader);
-        lineReaderWrapperService.reset(fileReader);
-
-        return !StringUtils.isEmpty(str) && fileLineToDtoConverter.convert(str).getUuid().equals(uuid);
     }
 
     private List<String> writeRemainingToUnique(LineNumberReader fileReader,

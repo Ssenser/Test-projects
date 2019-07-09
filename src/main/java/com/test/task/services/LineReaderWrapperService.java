@@ -9,12 +9,6 @@ public interface LineReaderWrapperService {
 
     String readLine(BufferedReader reader);
 
-    void mark(LineNumberReader reader);
-
-    void skipLines(LineNumberReader reader, int amount);
-
-    void reset(LineNumberReader reader);
-
     void close(LineNumberReader reader);
 
 }
