@@ -11,8 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.collections.Sets;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,7 +19,6 @@ import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -99,8 +96,8 @@ public class FileComparatorServiceImplTest {
         expectedResult.getUuidToFirstFileUniqueTuples().put(UUID_1, Sets.newSet(tuple2));
         expectedResult.getUuidToSecondFileUniqueTuples().put(UUID_1, Sets.newSet(tuple3));
 
-        doAnswer(getFirstReadLineAnswerForOneInvocation()).when(wrapperService).readLine(firstReader);
-        doAnswer(getSecondReadLineAnswerForOneInvocation()).when(wrapperService).readLine(secondReader);
+        when(wrapperService.readLine(firstReader)).thenReturn(NOT_EMPTY_STRING_1).thenReturn(null);
+        when(wrapperService.readLine(secondReader)).thenReturn(NOT_EMPTY_STRING_2).thenReturn(null);
 
         when(converter.convert(NOT_EMPTY_STRING_1)).thenReturn(fileLine1);
         when(converter.convert(NOT_EMPTY_STRING_2)).thenReturn(fileLine2);
@@ -130,8 +127,8 @@ public class FileComparatorServiceImplTest {
         when(converter.convert(NOT_EMPTY_STRING_1)).thenReturn(fileLine1);
         when(converter.convert(NOT_EMPTY_STRING_2)).thenReturn(fileLine2);
 
-        doAnswer(getFirstReadLineAnswerForOneInvocation()).when(wrapperService).readLine(firstReader);
-        doAnswer(getSecondReadLineAnswerForOneInvocation()).when(wrapperService).readLine(secondReader);
+        when(wrapperService.readLine(firstReader)).thenReturn(NOT_EMPTY_STRING_1).thenReturn(null);
+        when(wrapperService.readLine(secondReader)).thenReturn(NOT_EMPTY_STRING_2).thenReturn(null);
 
         final FilesCompareResult actualResult = testingInstance.compareFiles(FILE_NAME_1, FILE_NAME_2);
 
@@ -158,8 +155,8 @@ public class FileComparatorServiceImplTest {
         when(converter.convert(NOT_EMPTY_STRING_1)).thenReturn(fileLine1);
         when(converter.convert(NOT_EMPTY_STRING_2)).thenReturn(fileLine2);
 
-        doAnswer(getFirstReadLineAnswerForOneInvocation()).when(wrapperService).readLine(firstReader);
-        doAnswer(getSecondReadLineAnswerForOneInvocation()).when(wrapperService).readLine(secondReader);
+        when(wrapperService.readLine(firstReader)).thenReturn(NOT_EMPTY_STRING_1).thenReturn(null);
+        when(wrapperService.readLine(secondReader)).thenReturn(NOT_EMPTY_STRING_2).thenReturn(null);
 
         final FilesCompareResult actualResult = testingInstance.compareFiles(FILE_NAME_1, FILE_NAME_2);
 
@@ -173,25 +170,5 @@ public class FileComparatorServiceImplTest {
         verify(converter).convert(NOT_EMPTY_STRING_2);
 
         assertThat(actualResult, is(expectedResult));
-    }
-
-    private Answer getFirstReadLineAnswerForOneInvocation() {
-        return new Answer() {
-            private int count = 0;
-
-            public Object answer(InvocationOnMock invocation) {
-                return count++ == 0 ? NOT_EMPTY_STRING_1 : null;
-            }
-        };
-    }
-
-    private Answer getSecondReadLineAnswerForOneInvocation() {
-        return new Answer() {
-            private int count = 0;
-
-            public Object answer(InvocationOnMock invocation) {
-                return count++ == 0 ? NOT_EMPTY_STRING_2 : null;
-            }
-        };
     }
 }
